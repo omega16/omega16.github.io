@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <script src="scripts/main.js"></script> 
   <title>Lambda calculus1</title>
   <style>
       code{white-space: pre-wrap;}
@@ -88,10 +87,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="grid-container">
   <div class="blog-left-decoration"></div>
   <div class="blog-left">
-        <nav id="TOC" role="doc-toc">
+        <h2>Contents</h2>
+    <nav id="TOC" role="doc-toc">
     <ul>
-    <li><a href="#lambda-expressions"><span>Lambda expressions</span></a></li>
-    <li><a href="#lexing-and-parsing"><span>Lexing and Parsing</span></a><ul>
+    <li><a href="#lambda-expressions">Lambda expressions</a></li>
+    <li><a href="#lexing-and-parsing">Lexing and Parsing</a><ul>
     <li><a href="#first-grammar-and-parser">First grammar and parser</a></li>
     <li><a href="#second-parser">Second parser</a></li>
     </ul></li>
@@ -109,7 +109,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <p class="math-block">
     Since I’m a mathematician I will speak a lot about formal terms, you can just ignore blocks like this, and read the explication after the blocks (or go to other section)
     </p>
-    <h2 id="lambda-expressions"><a href="#TOC">Lambda expressions</a></h2>
+    <h2 id="lambda-expressions">Lambda expressions</h2>
     <p>To start with Lambda calculus all we need is define what’s a Lambda expression <span class="math inline"><em>Λ</em></span>.</p>
     <p>Formally we could say</p>
     <p class="math-block">
@@ -174,7 +174,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <p>Then our set of symbols will be the set <span class="math inline"><em>V</em></span> of all matching expression of the python regex</p>
     <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>[<span class="op">^</span>()<span class="op">\</span>n<span class="op">\</span>s<span class="op">\</span>.<span class="op">\\</span><span class="dv">0-9</span>][<span class="op">^</span>()<span class="op">\</span>n<span class="op">\</span>s<span class="op">\</span>.<span class="op">\\</span>]<span class="op">*</span></span></code></pre></div>
     <p>As it could be seen, We doesn’t allow to have digits at start of a symbol, the reason is , well, usually on most programing languages , variables can’t start with digit, We eventually would go to need to exclude digits at the beginning of symbols so is better to do it now.</p>
-    <h2 id="lexing-and-parsing"><a href="#TOC">Lexing and Parsing</a></h2>
+    <h2 id="lexing-and-parsing">Lexing and Parsing</h2>
     <p>To help us parsing lambda expressions, We would use a python library for parsing called <a href="https://github.com/lark-parser/lark">lark</a> if you don’t have it (most probably ) you can install it doing a</p>
     <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>pip install lark<span class="op">-</span>parser</span></code></pre></div>
     <p>I recommend if you like to avoid headaches, to install it inside of <a href="https://docs.python.org/3/library/venv.html">python venv</a> (as you must do with all pip packages).</p>
@@ -290,4 +290,5 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <div class="blog-right-decoration"></div>
 </div>
 </body>
+<script src="scripts/main.js"></script> 
 </html>

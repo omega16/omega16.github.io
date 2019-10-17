@@ -67,15 +67,22 @@ pre.numberSource {
     margin-bottom: 0.5em;
 }
 
-
-h2 a {
+.top-link{
     text-decoration: none;
-    color: inherit;
+    color:blue;
+    font-size:0.5em;
 }
 
-h2::after{
-    content: " [index] ";
-    color: blue;
+.top-link::before{
+    content:"[";
+    color: black;
+    padding-left:1em;
+}
+
+.top-link::after{
+    content:"]";
+    color: black;
+    padding-right:1em;
 }
 
 .grid-container{
@@ -131,7 +138,7 @@ h2::after{
     }
 
     .blog-entry{
-        display:none;
+        grid-column: 1/6;
     }
 
     .blog-left{
@@ -148,9 +155,6 @@ h2::after{
 }
 
 @media screen and (max-width:600px){
-    .blog-entry{
-        display:none;
-    }
 
     .blog-left{
         display:none;
