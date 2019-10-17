@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <script src="scripts/main.js"></script> 
+  <title>Lambda calculus1</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="css/main.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div class="header-container">
+    <h2 class="header"> A work in progress personal blog </h2>
+</div>
+<div class="grid-container">
+  <div class="blog-left-decoration"></div>
+  <div class="blog-left">
+        <nav id="TOC" role="doc-toc">
+    <ul>
+    <li><a href="#lambda-expressions"><span>Lambda expressions</span></a></li>
+    <li><a href="#lexing-and-parsing"><span>Lexing and Parsing</span></a><ul>
+    <li><a href="#first-grammar-and-parser">First grammar and parser</a></li>
+    <li><a href="#second-parser">Second parser</a></li>
+    </ul></li>
+    </ul>
+    </nav>
+      </div>
+      <div class="custom-title">
+      <h1 class="title">A Lambda calculus interpreter on python</h1>
+            <p class="author"><a href="https://github.com/omega16">omega16</a></p>
+            <p class="date">Oct-15-2019</p>
+          </div>
+    <div class="blog-entry">
+    <p>In this blog I assume you know about <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">BNF</a> (if not, well , you can go to wikipedia and come-back later ), maybe on the future I make and entry for <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">BNF</a> .</p>
+    <p>With that says , let’s start with What’s Lambda calculus (again wikipedia haves a <a href="https://en.wikipedia.org/wiki/Lambda_calculus">Lambda calculus</a> entry)</p>
+    <p class="math-block">
+    Since I’m a mathematician I will speak a lot about formal terms, you can just ignore blocks like this, and read the explication after the blocks (or go to other section)
+    </p>
+    <h2 id="lambda-expressions"><a href="#TOC">Lambda expressions</a></h2>
+    <p>To start with Lambda calculus all we need is define what’s a Lambda expression <span class="math inline"><em>Λ</em></span>.</p>
+    <p>Formally we could say</p>
+    <p class="math-block">
+    Let <span class="math inline"><em>V</em></span> be a subset of word’s space of some alphabet that do not contain the special characters as part of it (or can’t be on the word’s space).
+    </p>
+    <p>That truly means <span class="math inline"><em>V</em></span> is how we would name a bunch of symbols like ‘x’ , ‘y’ , … and more that don’t contain spaces, parenthesis or other reserved symbols that we would need to use to other purposes and that using the symbols in <span class="math inline"><em>V</em></span> we couldn’t write this reserved symbols.</p>
+    <div class="math-block">
+    The set of lambda expressions for <span class="math inline"><em>V</em></span> is writed <span class="math inline"><em>Λ</em>(<em>V</em>)</span> and defined inductively by
+    <ul>
+    <li>
+    <span class="math inline"><em>x</em> ∈ <em>Λ</em>(<em>V</em>) ∀ <em>x</em> ∈ <em>V</em></span>
+    </li>
+    <li>
+    (‘\’ , <span class="math inline"><em>x</em></span> , ‘.’, <span class="math inline"><em>M</em></span>) <span class="math inline"> ∈ <em>Λ</em>(<em>V</em>) ∀ <em>x</em> ∈ <em>V</em> ∀ <em>M</em> ∈ <em>Λ</em>(<em>V</em>)</span>
+    </li>
+    <li>
+    ( ‘(’ , <span class="math inline"><em>N</em></span> , <span class="math inline"><em>M</em></span> , ‘)’ ) <span class="math inline"> ∈ <em>Λ</em>(<em>V</em>) ∀ <em>M</em> , <em>N</em> ∈ <em>Λ</em>(<em>V</em>)</span>
+    </li>
+    </ul>
+    </div>
+    <p>So, it means a lambda expression on <span class="math inline"><em>V</em></span> is one expression that can be constructed using the rules .</p>
+    <ul>
+    <li><strong>variables</strong> all symbols of <span class="math inline"><em>V</em></span> are lambda expressions on <span class="math inline"><em>V</em></span></li>
+    <li><strong>abstraction</strong> all expressions like \x.M with x a symbol of <span class="math inline"><em>V</em></span> and M another lambda expression on <span class="math inline"><em>V</em></span> are lambda expressions on <span class="math inline"><em>V</em></span></li>
+    <li><strong>application</strong> all expressions (MN) with M,N already lambda expressions on <span class="math inline"><em>V</em></span> are a lambda expressions.</li>
+    </ul>
+    <p>To refer to the lambda expressions on <span class="math inline"><em>V</em></span> we will just write <span class="math inline"><em>Λ</em>(<em>V</em>)</span>.</p>
+    <p>By example think of <span class="math inline"><em>V</em> = {<em>a</em>, <em>b</em>, <em>c</em>}</span> then the next are some lambda expressions on <span class="math inline"><em>V</em></span>.</p>
+    <ul>
+    <li>(\a.a)</li>
+    <li>c</li>
+    <li>(ab)</li>
+    <li>(a(bc)a)</li>
+    <li>(\a.c(ba)(\c.a))</li>
+    </ul>
+    <p>As you can see , the only allowed to be a lambda expression on <span class="math inline"><em>V</em></span> without parenthesis are the lonely symbols , the rest of expression have an outer parenthesis, this and other issues would be corrected on future but right now We maintain this problem.</p>
+    <p>The only thing that we could made to get a more fancy (to eye) lambda expression without modify a fundamental rule about his construction is to choose a good to see set <span class="math inline"><em>V</em></span> of symbols. Since We don’t want to let out non English writers (I’m a non native English writer so I care) the set of symbols needs to be as extend as possible . As We said earlier the symbols set must exclude some fundamental characters, given the rules of lambda calculus the set of symbols that We don’t allow on the set are at least</p>
+    <ul>
+    <li>({)}.\</li>
+    <li>spaces</li>
+    <li>line breaks</li>
+    <li>other invisible symbols</li>
+    </ul>
+    <p>Why does we exclude the braces, spaces and line breaks ?</p>
+    <p>The braces were excluded to add clarity , Lambda calculus tend to be full of parenthesis so allow braces to be inside can help. Compare the expressions</p>
+    <pre><code>    (((\x.\y.\z.((xz)(yz)))(\w.w))(\t.(tt)))n
+    {({\x.\y.\z.({xz}{yz})}(\w.w))(\t.{tt})}n </code></pre>
+    <p>Both of them are a parenthesis (parenthesis/braces) hell, but the later is easy to read (just a little) than the former.</p>
+    <p>Next We exclude spaces to allow symbols to be separated by spaces, believe me , you don’t want that symbols can be invisible (<a href="https://esolangs.org/wiki/Whitespace">or you want?</a> ) . If We have symbols that can be separated using spaces, we can introduce symbols with more than one character on <span class="math inline"><em>V</em></span> and can’t improve a little more the readability</p>
+    <div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1"></a>{  ( {\x<span class="op">.</span>\y<span class="op">.</span>\z<span class="op">.</span>({x z}{y z})} (\w<span class="op">.</span>w) ) (\t<span class="op">.</span>{t t})  }n </span></code></pre></div>
+    <p>Line breaks can be very useful to separate even more the expressions</p>
+    <div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1"></a>{  </span>
+    <span id="cb3-2"><a href="#cb3-2"></a>    ( </span>
+    <span id="cb3-3"><a href="#cb3-3"></a>        { </span>
+    <span id="cb3-4"><a href="#cb3-4"></a>            \x<span class="op">.</span>\y<span class="op">.</span>\z<span class="op">.</span>({x z}{y z}) </span>
+    <span id="cb3-5"><a href="#cb3-5"></a>        } </span>
+    <span id="cb3-6"><a href="#cb3-6"></a>        (\w<span class="op">.</span>w) </span>
+    <span id="cb3-7"><a href="#cb3-7"></a>    ) </span>
+    <span id="cb3-8"><a href="#cb3-8"></a>    (\t<span class="op">.</span>{t t})  </span>
+    <span id="cb3-9"><a href="#cb3-9"></a>}n </span></code></pre></div>
+    <p>It seems quite ugly but it works in help to find matching parenthesis</p>
+    <p>Then our set of symbols will be the set <span class="math inline"><em>V</em></span> of all matching expression of the python regex</p>
+    <div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1"></a>[<span class="op">^</span>()<span class="op">\</span>n<span class="op">\</span>s<span class="op">\</span>.<span class="op">\\</span><span class="dv">0-9</span>][<span class="op">^</span>()<span class="op">\</span>n<span class="op">\</span>s<span class="op">\</span>.<span class="op">\\</span>]<span class="op">*</span></span></code></pre></div>
+    <p>As it could be seen, We doesn’t allow to have digits at start of a symbol, the reason is , well, usually on most programing languages , variables can’t start with digit, We eventually would go to need to exclude digits at the beginning of symbols so is better to do it now.</p>
+    <h2 id="lexing-and-parsing"><a href="#TOC">Lexing and Parsing</a></h2>
+    <p>To help us parsing lambda expressions, We would use a python library for parsing called <a href="https://github.com/lark-parser/lark">lark</a> if you don’t have it (most probably ) you can install it doing a</p>
+    <div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1"></a>pip install lark<span class="op">-</span>parser</span></code></pre></div>
+    <p>I recommend if you like to avoid headaches, to install it inside of <a href="https://docs.python.org/3/library/venv.html">python venv</a> (as you must do with all pip packages).</p>
+    <p>Why does We use a parsing library?</p>
+    <p>In true, We could use a hand made recursive descent parser but, we would mess around with grammar so often that is better to use (right now, maybe latter wont be) a library for it</p>
+    <p>There’s a (utterly heavy) libraries with more options like <a href="https://www.antlr.org/">ANTLR</a> , then Why not to use?</p>
+    <p>In <a href="https://www.antlr.org/">ANTLR</a> case it’s personal, I hated Java some Years ago, currently I’m okay with it but I tend to avoid Java anyway (and Java Script even if there were no related). To the other tools, well, <a href="https://github.com/lark-parser/lark">lark</a> does the work well, its actively maintained, writhed on python and simply to use , so Why not?</p>
+    <p>Now that we have been decided about the library (as you know, you could use whatever library you want ) We need to establish the grammar to the parser.</p>
+    <h3 id="first-grammar-and-parser">First grammar and parser</h3>
+    <p>The first thing is to import the lark library</p>
+    <div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1"></a><span class="im">from</span> lark <span class="im">import</span> Lark</span></code></pre></div>
+    <p>Since lark <a href="https://lark-parser.readthedocs.io/en/latest/grammar/">documentation</a> says it supports a syntax alike <a href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">BNF</a> we just would write the rules without much detail on syntax.</p>
+    <p>As the construction of a lambda expression start with the set of variables <span class="math inline"><em>V</em></span>, the <strong>variable</strong> rule is the first</p>
+    <div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1"></a>variable : <span class="op">/</span>[<span class="op">^</span>()<span class="op">\</span>n<span class="op">\</span>s<span class="op">\</span>.<span class="op">\\</span><span class="dv">0-9</span>][<span class="op">^</span>()<span class="op">\</span>n<span class="op">\</span>s<span class="op">\</span>.<span class="op">\\</span>]<span class="op">*/</span></span></code></pre></div>
+    <p>All on the middle of / / is taken by lark and using as python regex , so variable is the all the matches founded.</p>
+    <p>Then We could write the <strong>abstraction</strong> rule as</p>
+    <div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1"></a>abstraction : <span class="st">&quot;(&quot;</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">&quot;</span> variable <span class="st">&quot;.&quot;</span> (</span>
+    <span id="cb8-2"><a href="#cb8-2"></a>    variable <span class="op">|</span> abstraction <span class="op">|</span> application</span>
+    <span id="cb8-3"><a href="#cb8-3"></a>    ) <span class="st">&quot;)&quot;</span> </span></code></pre></div>
+    <p>But if we let it to be like that, the <strong>application</strong> rule would look like</p>
+    <div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1"></a>application : <span class="st">&quot;(&quot;</span> (</span>
+    <span id="cb9-2"><a href="#cb9-2"></a>    variable <span class="op">|</span> abstraction <span class="op">|</span> application</span>
+    <span id="cb9-3"><a href="#cb9-3"></a>    ) (</span>
+    <span id="cb9-4"><a href="#cb9-4"></a>    variable <span class="op">|</span> abstraction <span class="op">|</span> application</span>
+    <span id="cb9-5"><a href="#cb9-5"></a>    ) <span class="st">&quot;)&quot;</span> </span></code></pre></div>
+    <p>It could be simply but We Would add more rules than strictly needed to have a very more readable lambda calculus and then is convenient to change the rules to</p>
+    <div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1"></a></span>
+    <span id="cb10-2"><a href="#cb10-2"></a>expression : variable     </span>
+    <span id="cb10-3"><a href="#cb10-3"></a>        <span class="op">|</span> abstraction</span>
+    <span id="cb10-4"><a href="#cb10-4"></a>        <span class="op">|</span> application</span>
+    <span id="cb10-5"><a href="#cb10-5"></a></span>
+    <span id="cb10-6"><a href="#cb10-6"></a>abstraction : <span class="st">&quot;(&quot;</span> <span class="st">&quot;</span><span class="ch">\\</span><span class="st">&quot;</span> variable <span class="st">&quot;.&quot;</span> expression <span class="st">&quot;)&quot;</span> </span>
+    <span id="cb10-7"><a href="#cb10-7"></a></span>
+    <span id="cb10-8"><a href="#cb10-8"></a>application : <span class="st">&quot;(&quot;</span> expression expression <span class="st">&quot;)&quot;</span> </span></code></pre></div>
+    <p>This is pretty compact and enough clear about how a lambda expression can be writed , so that even are a <strong>expression</strong> rule that represent all the lambda expressions.</p>
+    <p>Once we have been added add the non needed rules We would revert the expression to a explicit options.</p>
+    <p>To have lark handle the spaces and line breaks we need to add to the grammar</p>
+    <pre><code>
+    %import common.WS
+    %ignore WS</code></pre>
+    <p>So the first full grammar to lark would be</p>
+    <div class="sourceCode" id="cb12"><pre class="sourceCode numberSource python numberLines"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1"></a></span>
+    <span id="cb12-2"><a href="#cb12-2"></a>grammar <span class="op">=</span><span class="vs">r&quot;&quot;&quot;</span></span>
+    <span id="cb12-3"><a href="#cb12-3"></a></span>
+    <span id="cb12-4"><a href="#cb12-4"></a><span class="vs">variable : /[^()\n\s\.0-9][^()\n\s\.]*/</span></span>
+    <span id="cb12-5"><a href="#cb12-5"></a></span>
+    <span id="cb12-6"><a href="#cb12-6"></a><span class="vs">abstraction : &quot;(&quot; &quot;\\&quot; variable &quot;.&quot; expression &quot;)&quot; </span></span>
+    <span id="cb12-7"><a href="#cb12-7"></a></span>
+    <span id="cb12-8"><a href="#cb12-8"></a><span class="vs">application : &quot;(&quot; expression expression &quot;)&quot; </span></span>
+    <span id="cb12-9"><a href="#cb12-9"></a></span>
+    <span id="cb12-10"><a href="#cb12-10"></a><span class="vs">expression : variable     </span></span>
+    <span id="cb12-11"><a href="#cb12-11"></a><span class="vs">    | abstraction</span></span>
+    <span id="cb12-12"><a href="#cb12-12"></a><span class="vs">    | application</span></span>
+    <span id="cb12-13"><a href="#cb12-13"></a></span>
+    <span id="cb12-14"><a href="#cb12-14"></a><span class="sc">%i</span><span class="vs">mport common.WS</span></span>
+    <span id="cb12-15"><a href="#cb12-15"></a><span class="sc">%i</span><span class="vs">gnore WS</span></span>
+    <span id="cb12-16"><a href="#cb12-16"></a></span>
+    <span id="cb12-17"><a href="#cb12-17"></a><span class="vs"> &quot;&quot;&quot;</span></span></code></pre></div>
+    <p>and define the parser as</p>
+    <div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1"></a>parser <span class="op">=</span> Lark(grammar,start<span class="op">=</span><span class="st">&#39;expression&#39;</span>)</span></code></pre></div>
+    <p>This allows us to write expressions like</p>
+    <div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1"></a>{\first<span class="op">.</span>\second<span class="op">.</span>\third<span class="op">.</span>((first third)(second third))}</span></code></pre></div>
+    <p>but forbids us from write it as classic lambda calculus expression</p>
+    <div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1"></a>\x<span class="op">.</span>\y<span class="op">.</span>\z<span class="op">.</span>((xz)(yz))</span></code></pre></div>
+    <p>the best aproach we can handle is</p>
+    <div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1"></a>\x<span class="op">.</span>\y<span class="op">.</span>\z<span class="op">.</span>((x z)(y z))</span></code></pre></div>
+    <p>that’s enough good , so, just remember our lambda calculus needs space between variables.</p>
+    <p>Before we add more rules to help us have a more readable lambda calculus We would end our first parser by adding a couple of auxiliary functions for testing</p>
+    <div class="sourceCode" id="cb17"><pre class="sourceCode numberSource python numberLines"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1"></a></span>
+    <span id="cb17-2"><a href="#cb17-2"></a><span class="kw">def</span> parse_file(path):</span>
+    <span id="cb17-3"><a href="#cb17-3"></a>    <span class="cf">with</span> <span class="bu">open</span>(path,<span class="st">&quot;r&quot;</span>) <span class="im">as</span> source_file:</span>
+    <span id="cb17-4"><a href="#cb17-4"></a>        source <span class="op">=</span> source_file.read()</span>
+    <span id="cb17-5"><a href="#cb17-5"></a>    <span class="cf">return</span> parser.parse(source)</span>
+    <span id="cb17-6"><a href="#cb17-6"></a></span>
+    <span id="cb17-7"><a href="#cb17-7"></a><span class="kw">def</span> parse_string(source):</span>
+    <span id="cb17-8"><a href="#cb17-8"></a>    <span class="cf">return</span> parser.parse(source)</span>
+    <span id="cb17-9"><a href="#cb17-9"></a></span>
+    <span id="cb17-10"><a href="#cb17-10"></a></span>
+    <span id="cb17-11"><a href="#cb17-11"></a><span class="kw">def</span> test_file(path):</span>
+    <span id="cb17-12"><a href="#cb17-12"></a>    tree <span class="op">=</span> parse_file(path)</span>
+    <span id="cb17-13"><a href="#cb17-13"></a>    <span class="bu">print</span>(tree.pretty())</span>
+    <span id="cb17-14"><a href="#cb17-14"></a></span>
+    <span id="cb17-15"><a href="#cb17-15"></a><span class="kw">def</span> test_string(source):</span>
+    <span id="cb17-16"><a href="#cb17-16"></a>    tree <span class="op">=</span> parse_string(source)</span>
+    <span id="cb17-17"><a href="#cb17-17"></a>    <span class="bu">print</span>(tree.pretty())</span></code></pre></div>
+    <p>All that functions does is take a file name or a lambda expression like string and help us calling the parser and then showing the generated tree on screen.</p>
+    <p>Using this functions we can define the interpreter function, this function must be waiting all the time for user input and would call the parser on the input as needed. Then Our first interpreter function wont be a real interpreter an just would call parser every time the user press the intro key</p>
+    <div class="sourceCode" id="cb18"><pre class="sourceCode numberSource python numberLines"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1"></a></span>
+    <span id="cb18-2"><a href="#cb18-2"></a><span class="kw">def</span> interpreter():</span>
+    <span id="cb18-3"><a href="#cb18-3"></a>    <span class="cf">while</span>(<span class="va">True</span>):</span>
+    <span id="cb18-4"><a href="#cb18-4"></a>        <span class="cf">try</span> :</span>
+    <span id="cb18-5"><a href="#cb18-5"></a>            line <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Lambda &gt;&gt; &quot;</span>)</span>
+    <span id="cb18-6"><a href="#cb18-6"></a>        <span class="cf">except</span> (<span class="pp">EOFError</span>,<span class="pp">KeyboardInterrupt</span>) :</span>
+    <span id="cb18-7"><a href="#cb18-7"></a>            <span class="cf">break</span></span>
+    <span id="cb18-8"><a href="#cb18-8"></a>        <span class="bu">print</span>(<span class="st">&quot;-&gt; </span><span class="ch">\n</span><span class="st">&quot;</span>,end<span class="op">=</span><span class="st">&quot;&quot;</span>)</span>
+    <span id="cb18-9"><a href="#cb18-9"></a>        test_string(line)</span></code></pre></div>
+    <p>Now we can import the file as module and use on other programs or in console, to make fast the access and test We add</p>
+    <div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1"></a></span>
+    <span id="cb19-2"><a href="#cb19-2"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&#39;__main__&#39;</span>:</span>
+    <span id="cb19-3"><a href="#cb19-3"></a>    <span class="im">import</span> sys </span>
+    <span id="cb19-4"><a href="#cb19-4"></a>    <span class="cf">if</span> (<span class="bu">len</span>(sys.argv)<span class="op">&gt;</span><span class="dv">1</span>):</span>
+    <span id="cb19-5"><a href="#cb19-5"></a>        <span class="cf">for</span> path <span class="kw">in</span> sys.argv[<span class="dv">1</span>:]:</span>
+    <span id="cb19-6"><a href="#cb19-6"></a>            test_file(path)</span>
+    <span id="cb19-7"><a href="#cb19-7"></a>    <span class="cf">else</span> :</span>
+    <span id="cb19-8"><a href="#cb19-8"></a>        interpreter()</span></code></pre></div>
+    <p>Now We can call the module as program and have access to the interpreter or pas a collection of files as argument and watch the result.</p>
+    <p>With this We have a full working parser, easy to test and extensible .</p>
+    <p>The complete code for this first parser could be found on the <a href="https://github.com/omega16/lambda-interpreter/blob/master/Parsers/parser1.py">github repo</a></p>
+    <h3 id="second-parser">Second parser</h3>
+    <p>As you may know , I’m not a native English speaker so, please help me to improve my writing skill’s .</p>
+  </div>
+  <div class="blog-right"></div>
+  <div class="blog-right-decoration"></div>
+</div>
+</body>
+</html>
